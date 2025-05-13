@@ -1,0 +1,225 @@
+---
+title: "R Tip of the Day"
+subtitle: "The Plotly Function (again)"
+author: "Ela Kanade"
+date: "May 13, 2025"
+format:
+  revealjs: 
+    slide-number: true
+    chalkboard: 
+      buttons: true
+    preview-links: auto
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+library(plotly)
+library(ggplot2)
+library(dplyr)
+library(janitor)
+library(sf)
+library(maps)
+```
+
+## What is Plotly anyways? {background-color="pink"}
+
+::: incremental
+-   It is not only a library in R, but it is also a company which is super cool!
+-   Used for interactive visualizations that make understanding data easier and more fun (in my opinion).
+-   Python, R, Julia, JavaScript, Dash and other languages can use the Plotly library.
+:::
+
+## What can it do in R? {background-color="pink"}
+
+::: incremental
+-   Creating interactive web-based graphs
+-   Integrates with ggplot2 via ggplotly().
+-   Works well with Shiny for building web apps (relevant for us!).
+-   You can also export to HTML for sharing.
+:::
+
+::: footer
+Learn more: [All about Plotly :)](https://en.wikipedia.org/wiki/Plotly)
+:::
+
+## The Data I Chose {background-color="pink"}
+
+::: incremental
+-   This data is called *Hospitals*
+    -   It shows all the Hospitals by city in the US
+-   We can see how important this data is!
+    -   You can see which places in the US have more hospitals and which do not.
+    -   This data could be used in numerous different ways. It also shows whether or not the hospital is a non-profit, a rehabilitation center etc...
+:::
+
+## An Important Graph to See {background-color="pink"}
+
+[![Click the map to take you to the original article.](images/FT_18.11.27_HospitalDistance_feature3.webp){width="1911"}](https://www.pewresearch.org/short-reads/2018/12/12/how-far-americans-live-from-the-closest-hospital-differs-by-community-type/)
+
+## Let's get into some code! {background-color="pink"}
+
+The basic code for a Plotly map
+
+```{r}
+# Load and clean hospital dataset
+Hospitals <- read_csv("~/Downloads/Hospitals.csv")
+
+# Clean names (optional but helpful)
+Hospitals <- Hospitals |> 
+  clean_names()
+```
+
+```{r}
+# Convert latitude/longitude to numeric and filter out invalid rows
+hospitals <- Hospitals |> 
+  mutate(
+    latitude = suppressWarnings(as.numeric(latitude)),
+    longitude = suppressWarnings(as.numeric(longitude))
+  ) |> 
+  filter(!is.na(latitude), !is.na(longitude), !is.na(name))
+```
+
+``` {.r code-line-numbers="1-15"}
+# Create interactive Plotly map
+plot_ly(
+  data = hospitals,
+  type = 'scattergeo',
+  mode = 'markers',
+  lat = ~latitude,
+  lon = ~longitude,
+  text = ~paste0("<b>", name, "</b><br>City: ", city, 
+  "<br>State: ", state, 
+  "</b><br>Type of Hospital: ", type),
+  marker = list(
+    size = 4,
+    color = 'red',
+    opacity = 0.6
+  )
+```
+
+## Let's get into some code! {background-color="pink"}
+
+Now, we add in the layered part!
+
+``` {.r code-line-numbers="13-24"}
+# Create interactive Plotly map
+plot_ly(
+  data = hospitals,
+  type = 'scattergeo',
+  mode = 'markers',
+  lat = ~latitude,
+  lon = ~longitude,
+  text = ~paste0("<b>", name, "</b><br>City: ", city, "<br>State: ", state, "</b><br>Type of Hospital: ", type),
+  marker = list(
+    size = 4,
+    color = 'red',
+    opacity = 0.6
+  ) |> 
+  layout(
+    title = "Interactive Map of U.S. Hospitals",
+    geo = list(
+      scope = 'usa',
+      projection = list(type = 'albers usa'),
+      showland = TRUE,
+      landcolor = "rgb(229, 229, 229)",
+      subunitcolor = "rgb(255, 255, 255)",
+      countrycolor = "rgb(255, 255, 255)"
+    )
+  )
+```
+
+## The map we created {background-color="pink"}
+
+```{r, height=2000, width=2000}
+# Create interactive Plotly map
+plot_ly(
+  data = hospitals,
+  type = 'scattergeo',
+  mode = 'markers',
+  lat = ~latitude,
+  lon = ~longitude,
+  text = ~paste0("<b>", name, "</b><br>City: ", city, "<br>State: ", state, "</b><br>Type of Hospital: ", type),
+  marker = list(
+    size = 4,
+    color = 'red',
+    opacity = 0.6
+  )
+) |> 
+  layout(
+    title = "Interactive Map of U.S. Hospitals",
+    geo = list(
+      scope = 'usa',
+      projection = list(type = 'albers usa'),
+      showland = TRUE,
+      landcolor = "rgb(229, 229, 229)",
+      subunitcolor = "rgb(255, 255, 255)",
+      countrycolor = "rgb(255, 255, 255)"
+    )
+  )
+
+```
+
+## Another example woot woot! {background-color="pink"}
+
+So now we have the map function that we did previosly, but my next question is: **Which US States have the most hospitals?!** Let's find out.
+
+``` {.r code-line-numbers="1-24"}
+# Plot the bar chart of top 10 states by hospital count
+plot_ly(
+  data = state_hospital_counts,
+  x = ~reorder(state, hospital_count),
+  y = ~hospital_count,
+  type = 'bar',
+  marker = list(color = 'steelblue')
+) |>
+  layout(
+    title = "Top 10 U.S. States by Number of Hospitals",
+    xaxis = list(title = "State"),
+    yaxis = list(title = "Number of Hospitals"),
+    margin = list(b = 100),
+    hovermode = "closest"
+  )
+```
+
+```{r}
+# Create a table of hospital counts per state (Top 10)
+state_hospital_counts <- hospitals |>
+  count(state, name = "hospital_count") |>
+  arrange(desc(hospital_count)) |>
+  slice_head(n = 10)
+```
+
+## What it looks like {background-color="pink"}
+
+```{r}
+# Plot the bar chart of top 10 states by hospital count
+plot_ly(
+  data = state_hospital_counts,
+  x = ~reorder(state, hospital_count),
+  y = ~hospital_count,
+  type = 'bar',
+  marker = list(color = 'steelblue')
+) |>
+  layout(
+    title = "Top 10 U.S. States by Number of Hospitals",
+    xaxis = list(title = "State"),
+    yaxis = list(title = "Number of Hospitals"),
+    margin = list(b = 100),
+    hovermode = "closest"
+  )
+```
+
+## Wrapping it up... {background-color="pink"}
+
+::: incremental
+-   Plotly is used for making interactive maps and charts
+-   Tooltip :)
+    -   A function where we can hover over a map or a visualization and see some more details about it.
+    -   You can also isolate regions for better understanding and more information.
+-   Also, healthcare and the ability to get it in a quick manner saves lives!
+:::
+
+## Thank You! {background-color="pink"}
+![Data + Healthcare = An Informed Public](images/kaiser_final_265dcf20bf86bc91590c49e978b05b5a.jpg){fig-align="center" width="346"}

@@ -8,14 +8,20 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
+      - href: about.qmd
+        text: About
+      - href: r_tip_of_the_day.qmd
+        text: R Tip of The Day!
+      - href: mini_project_4.qmd
+        text: Mini Project 2
 
 
 format:
   html:
-    theme: cosmo
+    theme: 
+      light: minty
+      dark: solar
     css: styles.css
-    toc: true
 
 editor: visual
 
