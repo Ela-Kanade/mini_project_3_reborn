@@ -1,0 +1,22 @@
+{
+  "index.qmd": {
+    "index.html": "d7112c4a"
+  },
+  "about.qmd": {
+    "about.html": "3282b670"
+  },
+  "r_tip_of_the_day.qmd": {
+    "r_tip_of_the_day.html": "0129d393"
+  },
+  "mini_project_4.qmd": {
+    "mini_project_4.html": "b2b6f260",
+    "mini_project_4.tex": "3e38cc7a"
+  },
+  "SDS264_S24/mini_project_1.qmd": {
+    "mini_project_1.html": "8dd109cb",
+    "mini_project_1.tex": "c5746bba"
+  },
+  "mini_project_1.qmd": {
+    "mini_project_1.html": "00c5eb62"
+  }
+}
