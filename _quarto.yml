@@ -12,6 +12,8 @@ website:
         text: About
       - href: r_tip_of_the_day.qmd
         text: R Tip of The Day!
+      - href: mini_project_1.qmd 
+        text: Mini Project 1
       - href: mini_project_4.qmd
         text: Mini Project 2
 

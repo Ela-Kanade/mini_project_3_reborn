@@ -2,4 +2,6 @@
 title: "Ela Kanade's Website"
 ---
 
-Hi! My name is Ela and I am a Bio major with a Statistics & Datascience Concentration at St. Olaf College.
+Hi! My name is Ela and I am a Bio major with a Statistics & Data Science Concentration at St. Olaf College. I am a huge ad
+
+![My cousins and siblings \<3](images/834f0fc6-d819-4efa-80cd-0e1f8cb9acbf.JPG){fig-align="center" width="489"}
